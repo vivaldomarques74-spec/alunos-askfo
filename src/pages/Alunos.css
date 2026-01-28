@@ -1,0 +1,71 @@
+.alunos-container {
+  background: #f4f6f8;
+  padding: 24px;
+  min-height: 100vh;
+}
+
+.alunos-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.alunos-box h2 {
+  margin-bottom: 16px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.form-grid input,
+.form-grid select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.form-actions {
+  margin-top: 16px;
+}
+
+.form-actions button {
+  padding: 10px 16px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.lista-alunos table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lista-alunos th,
+.lista-alunos td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.badge-ativo {
+  color: green;
+  font-weight: bold;
+}
+
+.badge-inativo {
+  color: red;
+  font-weight: bold;
+}
+
+.acoes button {
+  margin-right: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
