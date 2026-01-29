@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-const menuItemStyle = {
+const menuItemStyle: React.CSSProperties = {
   padding: "12px 16px",
   borderRadius: 8,
   textDecoration: "none",
@@ -19,12 +19,13 @@ export default function Sidebar() {
         display: "flex",
         flexDirection: "column",
         gap: 30,
+        minHeight: "100vh",
       }}
     >
       {/* LOGO */}
       <div style={{ textAlign: "center" }}>
         <img
-          src="/askfo-logo.jpg"
+          src="/askfo-logo.png"
           alt="ASKFO"
           style={{
             width: "80%",
