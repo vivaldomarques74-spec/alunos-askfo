@@ -15,7 +15,6 @@ function normalizarData(valor: any): string {
   } else if (valor instanceof Date) {
     data = valor;
   } else if (typeof valor === "string") {
-    // yyyy-mm-dd
     if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
       const [ano, mes, dia] = valor.split("-").map(Number);
       data = new Date(ano, mes - 1, dia);
@@ -23,23 +22,28 @@ function normalizarData(valor: any): string {
   }
 
   if (!data) return "-";
-
   return data.toLocaleDateString("pt-BR");
 }
 
 export function gerarPdfAluno(aluno: any) {
   const doc = new jsPDF("p", "mm", "a4");
 
-  // LOGO
-  const logoPath = "/askfo-logo.jpg"; // em /public
-  doc.addImage(logoPath, "JPG", 10, 10, 30, 30);
+  const img = new Image();
+  img.src = "/askfo-logo.jpg"; // em /public
 
-  doc.setFontSize(18);
-  doc.text("Ficha do Aluno - ASKFO", 50, 20);
+  img.onload = () => {
+    doc.addImage(img, "JPEG", 10, 10, 30, 30);
 
+    doc.setFontSize(18);
+    doc.text("Ficha do Aluno - ASKFO", 50, 20);
+
+    gerarConteudo(doc, aluno);
+  };
+}
+
+function gerarConteudo(doc: jsPDF, aluno: any) {
   doc.setFontSize(11);
 
-  // 🔒 nascimento oficial + compatibilidade
   const nascimento =
     aluno.nascimento ??
     aluno.dataNascimento ??
@@ -47,12 +51,10 @@ export function gerarPdfAluno(aluno: any) {
     aluno.dtNascimento ??
     null;
 
-  doc.text(`Nome: ${aluno.nome}`, 10, 50);
-  doc.text(
-    `Data de Nascimento: ${normalizarData(nascimento)}`,
-    10,
-    57
-  );
+  const nome = aluno.nomeCompleto || aluno.nome || "-";
+
+  doc.text(`Nome: ${nome}`, 10, 50);
+  doc.text(`Data de Nascimento: ${normalizarData(nascimento)}`, 10, 57);
   doc.text(`Email: ${aluno.email || "-"}`, 10, 64);
   doc.text(`Telefone: ${aluno.telefone || "-"}`, 10, 71);
   doc.text(`Unidade: ${aluno.unidade || "-"}`, 10, 78);
@@ -61,7 +63,7 @@ export function gerarPdfAluno(aluno: any) {
   doc.text(`Ativo: ${aluno.ativo ? "Sim" : "Não"}`, 10, 99);
 
   /* ============================
-     🆕 DADOS DO RESPONSÁVEL
+     DADOS DO RESPONSÁVEL
      ============================ */
   doc.setFontSize(14);
   doc.text("Dados do Responsável", 10, 110);
@@ -77,7 +79,7 @@ export function gerarPdfAluno(aluno: any) {
   });
 
   /* ============================
-     SAÚDE (inalterado)
+     SAÚDE
      ============================ */
   let y = (doc as any).lastAutoTable.finalY + 10;
   doc.setFontSize(14);
@@ -109,7 +111,7 @@ export function gerarPdfAluno(aluno: any) {
       aluno.historicoFaixas?.map((h: any) => [
         h.de,
         h.para,
-        h.data,
+        normalizarData(h.data),
       ]) || [],
   });
 
@@ -136,7 +138,7 @@ export function gerarPdfAluno(aluno: any) {
           detalhes = partes.join(" | ");
         }
 
-        return [e.nome, e.data, detalhes];
+        return [e.nome, normalizarData(e.data), detalhes];
       }) || [],
   });
 
@@ -148,5 +150,5 @@ export function gerarPdfAluno(aluno: any) {
   doc.text("Sensei Arliton Almeida", 10, y + 6);
   doc.text("Presidente ASKFO", 10, y + 12);
 
-  doc.save(`aluno-${aluno.nome}.pdf`);
+  doc.save(`aluno-${nome}.pdf`);
 }
